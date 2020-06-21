@@ -52,7 +52,7 @@ public class MeetupSchedule {
     static class Schedule{
         private int firstDay;
         private int lastDay;
-        private int investorId;
+        //private int investorId;
 
         public Schedule(int firstDay, int lastDay/*, int investorId*/) {
             this.firstDay = firstDay;
@@ -66,21 +66,19 @@ public class MeetupSchedule {
             if (o == null || getClass() != o.getClass()) return false;
             Schedule schedule = (Schedule) o;
             return firstDay == schedule.firstDay &&
-                    lastDay == schedule.lastDay &&
-                    investorId == schedule.investorId;
+                    lastDay == schedule.lastDay ;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(firstDay, lastDay, investorId);
+            return Objects.hash(firstDay, lastDay);
         }
 
         @Override
         public String toString() {
             return "Schedule{" +
                     "firstDay=" + firstDay +
-                    ", lastDay=" + lastDay +
-                    ", investorId=" + investorId +
+                    ", lastDay=" + lastDay+
                     '}';
         }
     }
