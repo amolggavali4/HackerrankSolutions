@@ -1,8 +1,8 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.security.cert.CollectionCertStoreParameters;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class BuSStand {
     /*
@@ -17,36 +17,55 @@ public class BuSStand {
 
     public static List<Integer> kthPerson(int k, List<Integer> p, List<Integer> q) {
         // Write your code here
-        List<Integer> result = new ArrayList<>();
-        System.out.println("Capacity "+k);
-        for(int i = 0; i < q.size(); i++){
-            int query = q.get(i);
-            System.out.println("Query "+query);
-            List<Integer> patient = p.stream().filter(x-> x >= query).collect(Collectors.toList());
-            System.out.println("people in the queue"+ patient);
-            if(patient.isEmpty()){
+        List<Integer> result = new ArrayList<>(q.size());
+
+        for(int query : q){
+            List<Integer> results= IntStream.range(0, p.size()).parallel()
+                    .filter(index -> p.get(index) >= query)
+                    .limit(k)
+                    .mapToObj(index -> index+1)
+                    .collect(Collectors.toList());
+                    /*.mapToObj(index -> index)
+                    .collect(Collectors.toList());*/
+            if(results.size() < k){
                 result.add(0);
             }else{
-                if(patient.size() >= k){
-                    result.add(patient.get(k-1));
-                }else{
-                    result.add(0);
-                }
+                result.add(results.get(k-1));
             }
+            //System.out.println(results);
+            //finalList.forEach(System.out::println);
+            /*int index = 0;
+            int capacity = 0;
+
+                for(int x = 0; x < p.size() && capacity < k; x++){
+                    index++;
+                    if(p.get(x) >= query){
+                        capacity++;
+                    }
+                }
+
+            if(index == 0 || capacity < k){
+                result.add(0);
+            }else {
+                result.add(index);
+            }*/
         }
-    return result;
+        return result;
     }
 
     public static void main(String[] args){
-        /*int capacity = 3;//k
-        int numPeople = 3;//n
-        List<Integer> p = Arrays.asList(2, 5, 3);
-        List<Integer> q = Arrays.asList(1, 5);*/
+        //int capacity = 3;//k
+        //int numPeople = 3;//n
+        //List<Integer> p = Arrays.asList(2, 5, 3);
+        //List<Integer> q = Arrays.asList(1, 5);
         int capacity = 2;//k
-        int numPeople = 3;//n
-        List<Integer> p = Arrays.asList(1, 4, 4, 3, 1, 2, 6);
+        int numPeople = 7;//n
+        /*List<Integer> p = Arrays.asList(1, 4, 4, 3, 1, 2, 6);
+        //Collections.reverse(p);
+        List<Integer> q = Arrays.asList(1, 2, 3, 4, 5, 6, 7);*/
+        List<Integer> p = Arrays.asList(1, 4, 4 ,3 , 1, 2, 6);
+        //Collections.reverse(p);
         List<Integer> q = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
-
         List<Integer> kth = kthPerson(capacity, p, q);
         System.out.println(kth);
 

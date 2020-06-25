@@ -27,32 +27,22 @@ public class StockMarketPrediction {
         // Write your code here
         List<Integer> predictedAnswer = new ArrayList<>(queries.size());
         List<StockDataMapper> data = IntStream.range(0, stockData.size())
-                .mapToObj(index-> new StockDataMapper(index+1, stockData.get(index))).collect(Collectors.toList());
+                .mapToObj(index-> new StockDataMapper(index+1, stockData.get(index)))
+                .collect(Collectors.toList());
 
         for(Integer query : queries){
             int stockDataValue = stockData.get(query-1);
 
-            StockDataMapper optionalPre = data.subList(0, query -1).stream().sorted(Comparator.comparing(StockDataMapper::getDay).reversed())
+            StockDataMapper optionalPre = data.subList(0, query -1).stream()
+                    .sorted(Comparator.comparing(StockDataMapper::getDay).reversed())
                     .filter(data1 -> data1.getData() < stockDataValue)
-                    //.collect(toList());
-                    //.findFirst().get().day
-                    .findFirst().orElseGet(()-> {return new StockDataMapper(0, -1);});
+                    .findFirst().orElseGet(()-> new StockDataMapper(0, -1));
 
-            //List<Integer> subDataPre =  stockData.subList(0, query -1);
             StockDataMapper optionalPost = data.subList(query, stockData.size()).stream()
                     .filter(data1 -> data1.getData() < stockDataValue)
-                    .findFirst().orElseGet(()->{ return new StockDataMapper(0, -1);});
-            //List<Integer> subDataPost = stockData.subList(query, stockData.size());
-            //Integer preIndex= new Integer(0);
+                    .findFirst().orElseGet(()-> new StockDataMapper(0, -1));
 
 
-
-            /*if(subDataPre.size() > 0){
-                preIndex = subDataPre.get(subDataPre.size()-1).getDay();
-            }
-            if(subDataPost.size() > 0){
-                postIndex = subDataPost.get(0).getDay();
-            }*/
             Integer preIndex = optionalPre.day;
             Integer postIndex = optionalPost.day;
             if(preIndex == 0 && postIndex == 0){
